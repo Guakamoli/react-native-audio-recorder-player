@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
@@ -52,10 +53,10 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
     fun startRecorder(path: String, audioSet: ReadableMap?, meteringEnabled: Boolean, promise: Promise) {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                    ActivityCompat.checkSelfPermission(reactContext, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions((currentActivity)!!, arrayOf(
-                        Manifest.permission.RECORD_AUDIO , 0)
+                ActivityCompat.checkSelfPermission(reactContext, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions((currentActivity)!!,arrayOf( Manifest.permission.RECORD_AUDIO), 0)
                 promise.reject("No permission granted.", "Try again after adding permission.")
+                promise.resolve(path)
                 return
             }
         } catch (ne: NullPointerException) {
@@ -119,6 +120,7 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     @ReactMethod
     fun resumeRecorder(promise: Promise) {
         if (mediaRecorder == null) {
@@ -137,6 +139,7 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     @ReactMethod
     fun pauseRecorder(promise: Promise) {
         if (mediaRecorder == null) {
@@ -329,8 +332,8 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
                           eventName: String,
                           params: WritableMap?) {
         reactContext
-                .getJSModule<RCTDeviceEventEmitter>(RCTDeviceEventEmitter::class.java)
-                .emit(eventName, params)
+            .getJSModule<RCTDeviceEventEmitter>(RCTDeviceEventEmitter::class.java)
+            .emit(eventName, params)
     }
 
     @ReactMethod

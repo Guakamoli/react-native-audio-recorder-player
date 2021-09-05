@@ -14,13 +14,14 @@ import androidx.core.app.ActivityCompat
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 import com.facebook.react.modules.core.PermissionListener
+import java.io.File
 import java.io.IOException
 import java.util.*
 import kotlin.math.log10
 
 class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext), PermissionListener {
     private var audioFileURL = ""
-    private var subsDurationMillis = 500
+    private var subsDurationMillis = 20
     private var _meteringEnabled = false
     private var mediaRecorder: MediaRecorder? = null
     private var mediaPlayer: MediaPlayer? = null
@@ -33,6 +34,19 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
     override fun getName(): String {
         return tag
     }
+
+    private fun createDir(file: File) {
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+    }
+
+    private fun getFilePath(): String {
+        val fileDir = File(reactContext.externalCacheDir, "Audio");
+        createDir(fileDir);
+        return fileDir.path +"/$defaultFileName"
+    }
+
 
     @ReactMethod
     fun startRecorder(path: String, audioSet: ReadableMap?, meteringEnabled: Boolean, promise: Promise) {
@@ -51,7 +65,7 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
             promise.reject("No permission granted.", "Try again after adding permission.")
             return
         }
-        audioFileURL = if (((path == "DEFAULT"))) "${reactContext.cacheDir}/$defaultFileName" else path
+        audioFileURL = if (((path == "DEFAULT"))) getFilePath() else path
         _meteringEnabled = meteringEnabled
 
         if (mediaRecorder == null) {
@@ -198,7 +212,7 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
 
         try {
             if ((path == "DEFAULT")) {
-                mediaPlayer!!.setDataSource("${reactContext.cacheDir}/$defaultFileName")
+                mediaPlayer!!.setDataSource(getFilePath())
             } else {
                 if (httpHeaders != null) {
                     val headers: MutableMap<String, String?> = HashMap<String, String?>()
@@ -230,7 +244,7 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
 
                 mTimer = Timer()
                 mTimer!!.schedule(mTask, 0, subsDurationMillis.toLong())
-                val resolvedPath = if (((path == "DEFAULT"))) "${reactContext.cacheDir}/$defaultFileName" else path
+                val resolvedPath = if (((path == "DEFAULT"))) getFilePath() else path
                 promise.resolve(resolvedPath)
             }
 
@@ -360,6 +374,6 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
 
     companion object {
         private var tag = "RNAudioRecorderPlayer"
-        private var defaultFileName = "sound.mp4"
+        private var defaultFileName = "paiya_sound.m4a"
     }
 }

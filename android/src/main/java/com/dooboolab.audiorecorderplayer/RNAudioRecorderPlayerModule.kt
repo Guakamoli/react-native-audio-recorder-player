@@ -140,8 +140,8 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
 //                            dB = 20 * log10(maxAmplitude.toDouble())
 //                        }
                         dB = maxAmplitude/32767.0;
-                        if(dB<0.3){
-                            dB = 0.3
+                        if(dB<0.03){
+                            dB = 0.03
                         }
                         obj.putDouble("currentMetering", dB)
                     }

@@ -135,11 +135,15 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
                         if (mediaRecorder != null) {
                             maxAmplitude = mediaRecorder!!.maxAmplitude
                         }
-//                        var dB = 0.0
+                        var dB = 0.0
 //                        if (maxAmplitude > 0) {
 //                            dB = 20 * log10(maxAmplitude.toDouble())
 //                        }
-                        obj.putDouble("currentMetering", maxAmplitude/32767.0)
+                        dB = maxAmplitude/32767.0;
+                        if(dB<0.3){
+                            dB = 0.3
+                        }
+                        obj.putDouble("currentMetering", dB)
                     }
                     sendEvent(reactContext, "rn-recordback", obj)
                     recordHandler!!.postDelayed(this, subsDurationMillis.toLong())

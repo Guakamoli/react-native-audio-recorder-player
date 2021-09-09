@@ -55,7 +55,9 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
 
             if (_meteringEnabled) {
                 audioRecorder.updateMeters()
-                currentMetering = audioRecorder.averagePower(forChannel: 0)
+                let decibel = audioRecorder?.averagePower(forChannel: 0) ?? 0
+                let amp = pow(10, decibel / 20)
+                currentMetering = max(0, min(amp, 1))
             }
 
             let status = [

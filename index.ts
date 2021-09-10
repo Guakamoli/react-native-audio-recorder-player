@@ -6,7 +6,7 @@ import {
   Platform,
 } from 'react-native';
 
-const {RNAudioRecorderPlayer} = NativeModules;
+const { RNAudioRecorderPlayer } = NativeModules;
 
 export enum AudioSourceAndroidType {
   DEFAULT = 0,
@@ -323,7 +323,7 @@ class AudioRecorderPlayer {
       this._hasPaused = false;
 
       if (Platform.OS === 'android')
-        return RNAudioRecorderPlayer.startPlayer(uri, httpHeaders,startTime);
+        return RNAudioRecorderPlayer.startPlayer(uri, startTime, httpHeaders);
 
       return RNAudioRecorderPlayer.startPlayer(uri);
     }

@@ -298,10 +298,11 @@ class AudioRecorderPlayer {
    */
   startPlayer = async (
     uri?: string,
+    startTime?: number,
     httpHeaders?: Record<string, string>,
   ): Promise<string> => {
     if (!uri) uri = 'DEFAULT';
-
+    if (!startTime) startTime = 0.0;
     if (!this._playerSubscription)
       if (Platform.OS === 'android')
         this._playerSubscription = DeviceEventEmitter.addListener(
@@ -322,7 +323,7 @@ class AudioRecorderPlayer {
       this._hasPaused = false;
 
       if (Platform.OS === 'android')
-        return RNAudioRecorderPlayer.startPlayer(uri, httpHeaders);
+        return RNAudioRecorderPlayer.startPlayer(uri, httpHeaders,startTime);
 
       return RNAudioRecorderPlayer.startPlayer(uri);
     }

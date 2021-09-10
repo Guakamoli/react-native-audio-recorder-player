@@ -231,11 +231,12 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
     }
 
     @ReactMethod
-    fun startPlayer(path: String, httpHeaders: ReadableMap?, promise: Promise) {
+    fun startPlayer(path: String,startTime: Double, httpHeaders: ReadableMap?, promise: Promise) {
         if (mediaPlayer != null) {
             val isPaused = !mediaPlayer!!.isPlaying && mediaPlayer!!.currentPosition > 1
 
             if (isPaused) {
+                mediaPlayer!!.seekTo(startTime.toInt())
                 mediaPlayer!!.start()
                 promise.resolve("player resumed.")
                 return
@@ -271,6 +272,7 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
 
             mediaPlayer!!.setOnPreparedListener { mp ->
                 Log.d(tag, "mediaplayer prepared and start")
+                mp.seekTo(startTime.toInt())
                 mp.start()
                 /**
                  * Set timer task to send event to RN.

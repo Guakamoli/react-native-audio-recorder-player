@@ -325,8 +325,15 @@ class AudioRecorderPlayer {
       if (Platform.OS === 'android')
         return RNAudioRecorderPlayer.startPlayer(uri, startTime, httpHeaders);
 
-      return RNAudioRecorderPlayer.startPlayer(uri);
+      return RNAudioRecorderPlayer.startPlayer(uri,startTime);
     }
+  };
+
+  getAudioDuration = async (
+    uri?: string,
+  ): Promise<string> => {
+    if (!uri) uri = 'DEFAULT';
+    return RNAudioRecorderPlayer.getAudioDuration(uri);
   };
 
   /**

@@ -31,6 +31,11 @@ RCT_EXTERN_METHOD(setVolume:(float)volume
                   rejecter:(RCTPromiseRejectBlock) reject);
 
 RCT_EXTERN_METHOD(startPlayer:(NSString*)path
+                  time:(nonnull double*) time
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(getAudioDuration:(NSString*)path
                   resolve:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject);
 

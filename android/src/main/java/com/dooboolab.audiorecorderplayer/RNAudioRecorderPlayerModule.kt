@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
@@ -407,6 +408,29 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
         subsDurationMillis = (sec * 1000).toInt()
         promise.resolve("setSubscriptionDuration: $subsDurationMillis")
     }
+
+    @ReactMethod
+    fun getAudioDuration(path: String , promise: Promise) {
+        var audioTime = "0"
+        val mediaPlayer = MediaPlayer()
+        try {
+            if ((path == "DEFAULT")) {
+                mediaPlayer.setDataSource(currentActivity!!.applicationContext, Uri.parse(getFilePath()))
+            }else{
+                mediaPlayer.setDataSource(currentActivity!!.applicationContext, Uri.parse(path))
+            }
+            mediaPlayer.prepare();
+            audioTime = mediaPlayer.duration.toString();
+        } catch (e: Exception) {
+            e.printStackTrace();
+        } finally {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+            mediaPlayer.release();
+        }
+        promise.resolve(audioTime)
+    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

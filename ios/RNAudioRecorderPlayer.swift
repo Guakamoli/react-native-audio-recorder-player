@@ -60,6 +60,10 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
                 currentMetering = max(0, min(amp, 1))
             }
             
+            if(currentMetering<0.03){
+                currentMetering = 0.03
+            }
+            
             let status = [
                 "isRecording": audioRecorder.isRecording,
                 "currentPosition": audioRecorder.currentTime * 1000,
